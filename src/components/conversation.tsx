@@ -41,6 +41,7 @@ class Conversation extends Component<any, State> {
 	};
 
 	input: any = null;
+
 	currentMutation: Mutation = {
 		author: "Bob",
 		conversationId: "",
@@ -66,19 +67,40 @@ class Conversation extends Component<any, State> {
 		const socket = socketIOClient("http://localhost:3000", {
 			path: "/socket",
 		});
-		socket.emit("message", "yaaaayyyy");
-		socket.on(`mutationRecieved-${id}`, (data: any) => {
-			console.log("Mutation for this convo received")
-			console.log(data)
-		})
+		socket.on(`mutationRecieved-${id}`, (lastMutation: any) => {
+			console.log("new mutation received", lastMutation);
+			this.setState({
+				lastMutation,
+			});
+		});
 		this.setState({
 			socket,
 		});
 	}
 
+	resetMutation() {
+		this.currentMutation = {
+			author: "Bob",
+			conversationId: this.state.id,
+			data: {
+				_index: 0,
+				length: 0,
+				text: "",
+				type: "insert",
+			},
+			origin: undefined,
+		};
+	}
+
 	sendMutation() {
-		console.log("sending mutation")
-		this.state.socket.emit("mutation", this.currentMutation)
+		if (
+			this.currentMutation.data.length > 0 ||
+			this.currentMutation.data.type === "delete"
+		) {
+			console.log("sending mutation");
+			this.state.socket.emit("mutation", this.currentMutation);
+			this.resetMutation();
+		}
 	}
 
 	updateSelection() {
@@ -91,12 +113,17 @@ class Conversation extends Component<any, State> {
 		}
 	}
 
-	updateMutation(event: KeyboardEvent<HTMLTextAreaElement>) {
+	insertMutation(event: KeyboardEvent<HTMLTextAreaElement>) {
 		const char =
 			event.keyCode !== 13 ? String.fromCharCode(event.charCode) : "\n";
 
 		if (this.currentMutation.conversationId === "")
 			this.currentMutation.conversationId = this.state.id;
+
+		if (this.currentMutation.data.type === "delete") {
+			this.sendMutation();
+		}
+
 		this.currentMutation.data.text += char;
 		this.currentMutation.data.length = this.currentMutation.data.text.length;
 		this.currentMutation.data._index =
@@ -110,14 +137,38 @@ class Conversation extends Component<any, State> {
 			else this.currentMutation.origin[lastMutation.author]++;
 		}
 
-		if (this.currentMutation.data.text.length > 5) {
-			this.sendMutation()
+		if (this.currentMutation.data.length > 20) {
+			this.sendMutation();
 		}
+	}
+
+	deleteMutation() {
+		if (this.currentMutation.conversationId === "")
+			this.currentMutation.conversationId = this.state.id;
+
+		if (this.currentMutation.data.type === "insert") {
+			if (this.currentMutation.data.length > 0) this.sendMutation();
+
+			this.currentMutation.data.type = "delete";
+		}
+
+		if (this.currentMutation.origin === undefined) {
+			const { lastMutation } = this.state;
+			this.currentMutation.origin = lastMutation.origin;
+			if (this.currentMutation.origin[lastMutation.author] === undefined)
+				this.currentMutation.origin[lastMutation.author] = 1;
+			else this.currentMutation.origin[lastMutation.author]++;
+		}
+
+		this.currentMutation.data._index = this.state.selectionStart;
+
+		this.currentMutation.data.length += 1;
+		console.log(this.currentMutation);
 	}
 
 	render() {
 		return (
-			<div>
+			<div className="textBox">
 				<h1>{this.state.id}</h1>
 				<textarea
 					ref={(input) => (this.input = input)}
@@ -129,14 +180,20 @@ class Conversation extends Component<any, State> {
 						});
 					}}
 					onClick={(_: MouseEvent<HTMLTextAreaElement>) => {
+						this.sendMutation();
 						this.updateSelection();
 					}}
 					onKeyPress={(event: KeyboardEvent<HTMLTextAreaElement>) => {
 						this.updateSelection();
-						this.updateMutation(event);
+						this.insertMutation(event);
 					}}
-					onKeyUp={(event) => console.log(event.keyCode)}
+					onKeyUp={(event) => {
+						if (event.keyCode === 8) {
+							this.deleteMutation();
+						}
+					}}
 				/>
+				<div className="highlightBox">{this.state.text}</div>
 				<br />
 				<span>selectionStart: {this.state.selectionStart}</span>
 				<br />
