@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import socketIOClient from "socket.io-client";
 
 type State = {
 	user: string;
@@ -24,7 +25,12 @@ class Conversation extends Component<any, State> {
 
 		fetch("http://localhost:3000/conversations/read/" + id)
 			.then((res) => res.json())
-			.then((res) => this.setState({ text: res.text }));
+      .then((res) => this.setState({ text: res.text }));
+      
+    const socket = socketIOClient("http://localhost:3000", {
+      path: "/socket"
+    })
+    socket.emit("message", "yaaaayyyy")
 	}
 
 	render() {
