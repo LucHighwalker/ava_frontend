@@ -12,23 +12,21 @@ type State = {
 	socket: any;
 	id: string | undefined;
 	text: string | undefined;
+	lastMutation: any;
 	selectionStart: number;
 	selectionEnd: number;
 };
 
 type Mutation = {
 	author: string;
-	conversationId: string;
+	conversationId: string | undefined;
 	data: {
 		_index: number;
 		length: number;
 		text: string;
 		type: "insert" | "delete";
 	};
-	origin: {
-		Alice: number;
-		Bob: number;
-	};
+	origin: any;
 };
 
 class Conversation extends Component<any, State> {
@@ -37,6 +35,7 @@ class Conversation extends Component<any, State> {
 		socket: undefined,
 		id: undefined,
 		text: undefined,
+		lastMutation: undefined,
 		selectionStart: 0,
 		selectionEnd: 0,
 	};
@@ -51,10 +50,7 @@ class Conversation extends Component<any, State> {
 			text: "",
 			type: "insert",
 		},
-		origin: {
-			Alice: 0,
-			Bob: 0,
-		},
+		origin: undefined,
 	};
 
 	componentDidMount() {
@@ -63,7 +59,9 @@ class Conversation extends Component<any, State> {
 
 		fetch("http://localhost:3000/conversations/read/" + id)
 			.then((res) => res.json())
-			.then((res) => this.setState({ text: res.text }));
+			.then((res) =>
+				this.setState({ text: res.text, lastMutation: res.lastMutation })
+			);
 
 		const socket = socketIOClient("http://localhost:3000", {
 			path: "/socket",
@@ -74,14 +72,33 @@ class Conversation extends Component<any, State> {
 		socket.emit("message", "yaaaayyyy");
 	}
 
+	updateSelection() {
+		if (typeof this.input === "object" && this.input !== null) {
+			const { selectionStart, selectionEnd } = this.input;
+			this.setState({
+				selectionStart: selectionStart,
+				selectionEnd: selectionEnd,
+			});
+		}
+	}
+
 	updateMutation(event: KeyboardEvent<HTMLTextAreaElement>) {
 		const char = String.fromCharCode(event.charCode);
+
+		if (this.currentMutation.conversationId === "")
+			this.currentMutation.conversationId = this.state.id;
 		this.currentMutation.data.text += char;
 		this.currentMutation.data.length = this.currentMutation.data.text.length;
 		this.currentMutation.data._index =
 			this.state.selectionStart - this.currentMutation.data.text.length;
 
-		console.log(this.currentMutation)
+		if (this.currentMutation.origin === undefined) {
+			const { lastMutation } = this.state;
+			this.currentMutation.origin = lastMutation.origin;
+			if (this.currentMutation.origin[lastMutation.author] === undefined)
+				this.currentMutation.origin[lastMutation.author] = 1;
+			else this.currentMutation.origin[lastMutation.author]++;
+		}
 	}
 
 	render() {
@@ -92,30 +109,18 @@ class Conversation extends Component<any, State> {
 					ref={(input) => (this.input = input)}
 					value={this.state.text ? this.state.text : ""}
 					onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-						if (typeof this.input === "object" && this.input !== null) {
-							const { selectionStart } = this.input;
-							if (typeof selectionStart === "number") {
-								this.setState({
-									text: event.target.value,
-									selectionStart: selectionStart,
-									selectionEnd: selectionStart,
-								});
-								return;
-							}
-						}
+						this.updateSelection();
+						this.setState({
+							text: event.target.value,
+						});
 					}}
 					onClick={(_: MouseEvent<HTMLTextAreaElement>) => {
-						if (typeof this.input === "object" && this.input !== null) {
-							const {selectionStart, selectionEnd} = this.input;
-							this.setState({
-								selectionStart: selectionStart,
-								selectionEnd: selectionEnd,
-							});
-						}
+						this.updateSelection();
 					}}
-					onKeyPress={(event: KeyboardEvent<HTMLTextAreaElement>) =>
-						this.updateMutation(event)
-					}
+					onKeyPress={(event: KeyboardEvent<HTMLTextAreaElement>) => {
+						this.updateSelection();
+						this.updateMutation(event);
+					}}
 				/>
 				<br />
 				<span>selectionStart: {this.state.selectionStart}</span>
