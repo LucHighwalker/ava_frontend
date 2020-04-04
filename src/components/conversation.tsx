@@ -15,10 +15,6 @@ class Conversation extends Component<any, State> {
 		text: undefined,
 	};
 
-	constructor(props: any) {
-		super(props);
-	}
-
 	componentDidMount() {
 		const { id } = this.props.match.params;
 		this.setState({ id });

@@ -18,10 +18,6 @@ export default class Navbar extends Component<Props, State> {
 		hidden: true,
 	};
 
-	constructor(props: Props) {
-		super(props);
-	}
-
 	render() {
 		return (
 			<nav className={this.state.hidden ? "navbar hidden" : "navbar"}>

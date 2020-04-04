@@ -16,10 +16,6 @@ export default class Conversations extends Component<Props, State> {
 		conversations: [],
 	};
 
-	constructor(props: Props) {
-		super(props);
-	}
-
 	componentDidMount() {
 		fetch("http://localhost:3000/conversations")
 			.then((res) => res.json())
