@@ -10,6 +10,7 @@ import "./App.scss";
 import Home from "./components/home";
 import Navbar from "./components/navbar";
 import Conversations from "./components/conversations";
+import Conversation from "./components/conversation";
 
 function App() {
 	return (
@@ -30,6 +31,12 @@ function App() {
 						exact
 						render={(props: RouteComponentProps<any>) => (
 							<Conversations {...props} user="luc" />
+						)}
+					/>
+					<Route
+						path="/conversation/:id"
+						render={(props: RouteComponentProps<any>) => (
+							<Conversation {...props} user="luc" />
 						)}
 					/>
 				</Router>
