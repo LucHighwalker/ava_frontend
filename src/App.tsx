@@ -9,6 +9,7 @@ import "./App.scss";
 
 import Home from "./components/home";
 import Navbar from "./components/navbar";
+import Conversations from "./components/conversations";
 
 function App() {
 	return (
@@ -22,6 +23,13 @@ function App() {
 						exact
 						render={(props: RouteComponentProps<any>) => (
 							<Home {...props} message="This is home" />
+						)}
+					/>
+					<Route
+						path="/conversation"
+						exact
+						render={(props: RouteComponentProps<any>) => (
+							<Conversations {...props} user="luc" />
 						)}
 					/>
 				</Router>

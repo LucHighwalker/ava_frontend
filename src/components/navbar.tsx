@@ -20,10 +20,6 @@ export default class Navbar extends Component<Props, State> {
 
 	constructor(props: Props) {
 		super(props);
-
-		this.setState({
-			user: this.props.user,
-		});
 	}
 
 	render() {
@@ -34,7 +30,7 @@ export default class Navbar extends Component<Props, State> {
 						<Link to="/">Home</Link>
 					</li>
 					<li>
-						<Link to="/conversations">Conversations</Link>
+						<Link to="/conversation">Conversations</Link>
 					</li>
 				</ul>
 				<button
