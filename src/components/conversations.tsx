@@ -6,13 +6,11 @@ type Props = {
 };
 
 type State = {
-	user: string;
 	conversations: object[];
 };
 
 export default class Conversations extends Component<Props, State> {
 	state: State = {
-		user: "luc",
 		conversations: [],
 	};
 

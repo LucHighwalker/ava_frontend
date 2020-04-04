@@ -1,22 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
 
 type Props = {
+	user: string;
 	message: string;
 };
 
-type State = {
-	user: string;
-};
-
-export default class Home extends Component<Props, State> {
-	state: State = {
-		user: "luc",
-	};
-
-	render() {
-		return (<div>
-      <p>{this.props.message}</p>
-      <p>{this.state.user}</p>
-    </div>);
-	}
+export default function Home(props: Props) {
+	return (
+		<div>
+			<p>{props.message}</p>
+			<p>{props.user}</p>
+		</div>
+	);
 }

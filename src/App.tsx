@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import {
 	BrowserRouter as Router,
 	Route,
@@ -12,37 +12,59 @@ import Navbar from "./components/navbar";
 import Conversations from "./components/conversations";
 import Conversation from "./components/conversation";
 
-function App() {
-	return (
-		<div className="App">
-			<header className="App-header">
-				<Router>
-					<Navbar user="luc"></Navbar>
+type State = {
+	user: string;
+};
 
-					<Route
-						path="/"
-						exact
-						render={(props: RouteComponentProps<any>) => (
-							<Home {...props} message="This is home" />
-						)}
-					/>
-					<Route
-						path="/conversation"
-						exact
-						render={(props: RouteComponentProps<any>) => (
-							<Conversations {...props} user="luc" />
-						)}
-					/>
-					<Route
-						path="/conversation/:id"
-						render={(props: RouteComponentProps<any>) => (
-							<Conversation {...props} user="luc" />
-						)}
-					/>
-				</Router>
-			</header>
-		</div>
-	);
+export default class App extends Component<any, State> {
+	state: State = {
+		user: "Anonymous",
+	};
+
+	componentDidMount() {
+		if (this.state.user === "") {
+			const user = window.prompt("What is your name?", "Anonymous");
+			if (user)
+				this.setState({
+					user,
+				});
+		}
+	}
+
+	render() {
+		return (
+			<div className="App">
+				<header className="App-header">
+					<Router>
+						<Navbar user={this.state.user}></Navbar>
+
+						<Route
+							path="/"
+							exact
+							render={(props: RouteComponentProps<any>) => (
+								<Home
+									{...props}
+									user={this.state.user}
+									message="This is home"
+								/>
+							)}
+						/>
+						<Route
+							path="/conversation"
+							exact
+							render={(props: RouteComponentProps<any>) => (
+								<Conversations {...props} user={this.state.user} />
+							)}
+						/>
+						<Route
+							path="/conversation/:id"
+							render={(props: RouteComponentProps<any>) => (
+								<Conversation {...props} user={this.state.user} />
+							)}
+						/>
+					</Router>
+				</header>
+			</div>
+		);
+	}
 }
-
-export default App;

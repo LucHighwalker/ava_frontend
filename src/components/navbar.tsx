@@ -8,13 +8,11 @@ type Props = {
 };
 
 type State = {
-	user: string;
 	hidden: boolean;
 };
 
 export default class Navbar extends Component<Props, State> {
 	state: State = {
-		user: "luc",
 		hidden: true,
 	};
 
@@ -28,6 +26,7 @@ export default class Navbar extends Component<Props, State> {
 		return (
 			<div>
 				<nav className={this.state.hidden ? "navbar hidden" : "navbar"}>
+					<h3>{this.props.user}</h3>
 					<ul>
 						<li>
 							<Link to="/">Home</Link>

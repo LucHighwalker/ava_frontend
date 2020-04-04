@@ -3,15 +3,17 @@ import React, {
 	ChangeEvent,
 	MouseEvent,
 	KeyboardEvent,
-	UIEvent,
 } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 
 import "./conversation.scss";
 
-type State = {
+interface Props extends RouteComponentProps {
 	user: string;
+}
+
+type State = {
 	socket: any;
 	id: string | undefined;
 	text: string;
@@ -33,9 +35,8 @@ type Mutation = {
 	origin: any;
 };
 
-class Conversation extends Component<any, State> {
+class Conversation extends Component<Props | any, State> {
 	state: State = {
-		user: "luc",
 		socket: undefined,
 		id: undefined,
 		text: "",
@@ -48,7 +49,7 @@ class Conversation extends Component<any, State> {
 	input: any = null;
 
 	currentMutation: Mutation = {
-		author: "Bob",
+		author: "",
 		conversationId: "",
 		data: {
 			_index: 0,
@@ -59,7 +60,7 @@ class Conversation extends Component<any, State> {
 		origin: undefined,
 	};
 
-	constructor(props: any) {
+	constructor(props: Props) {
 		super(props);
 
 		this.highlightLastMutation = this.highlightLastMutation.bind(this);
@@ -68,6 +69,7 @@ class Conversation extends Component<any, State> {
 	componentDidMount() {
 		const { id } = this.props.match.params;
 		this.setState({ id });
+		this.resetMutation()
 
 		fetch("http://localhost:3000/conversations/read/" + id)
 			.then((res) => res.json())
@@ -91,7 +93,7 @@ class Conversation extends Component<any, State> {
 
 	resetMutation() {
 		this.currentMutation = {
-			author: "Bob",
+			author: this.props.user,
 			conversationId: this.state.id,
 			data: {
 				_index: 0,
@@ -240,9 +242,6 @@ class Conversation extends Component<any, State> {
 							this.deleteMutation();
 						}
 					}}
-					// onScroll={(event: UIEvent<HTMLTextAreaElement>) => {
-					// 	console.log(event);
-					// }}
 				/>
 				<div className="highlightBox">
 					<div className="highlights">{this.highlightLastMutation()}</div>
