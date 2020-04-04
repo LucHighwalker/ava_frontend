@@ -7,11 +7,13 @@ import React, {
 import { withRouter } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 
+import "./conversation.scss";
+
 type State = {
 	user: string;
 	socket: any;
 	id: string | undefined;
-	text: string | undefined;
+	text: string;
 	lastMutation: any;
 	selectionStart: number;
 	selectionEnd: number;
@@ -34,7 +36,7 @@ class Conversation extends Component<any, State> {
 		user: "luc",
 		socket: undefined,
 		id: undefined,
-		text: undefined,
+		text: "",
 		lastMutation: undefined,
 		selectionStart: 0,
 		selectionEnd: 0,
@@ -53,6 +55,12 @@ class Conversation extends Component<any, State> {
 		},
 		origin: undefined,
 	};
+
+	constructor(props: any) {
+		super(props);
+
+		this.highlightLastMutation = this.highlightLastMutation.bind(this);
+	}
 
 	componentDidMount() {
 		const { id } = this.props.match.params;
@@ -166,6 +174,27 @@ class Conversation extends Component<any, State> {
 		console.log(this.currentMutation);
 	}
 
+	highlightLastMutation() {
+		const { text, lastMutation } = this.state;
+		if (lastMutation !== undefined) {
+			const stringLeft = text.slice(0, lastMutation.data._index);
+			const stringRight = text.slice(
+				lastMutation.data._index + lastMutation.data.length
+			);
+			const stringHighlight = lastMutation.data.text;
+
+			const array = [stringLeft, stringHighlight, stringRight];
+
+			return array.map((elem, i) => {
+				return (
+					<span key={i} className={i === 1 ? "highlighted" : ""}>
+						{elem}
+					</span>
+				);
+			});
+		}
+	}
+
 	render() {
 		return (
 			<div className="textBox">
@@ -193,11 +222,9 @@ class Conversation extends Component<any, State> {
 						}
 					}}
 				/>
-				<div className="highlightBox">{this.state.text}</div>
-				<br />
-				<span>selectionStart: {this.state.selectionStart}</span>
-				<br />
-				<span>selectionEnd: {this.state.selectionEnd}</span>
+				<div className="highlightBox">
+					<div className="highlights">{this.highlightLastMutation()}</div>
+				</div>
 			</div>
 		);
 	}
