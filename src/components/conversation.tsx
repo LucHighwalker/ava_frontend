@@ -17,6 +17,7 @@ type State = {
 	lastMutation: any;
 	selectionStart: number;
 	selectionEnd: number;
+	highlightOffset: number;
 };
 
 type Mutation = {
@@ -40,6 +41,7 @@ class Conversation extends Component<any, State> {
 		lastMutation: undefined,
 		selectionStart: 0,
 		selectionEnd: 0,
+		highlightOffset: 0,
 	};
 
 	input: any = null;
@@ -139,6 +141,12 @@ class Conversation extends Component<any, State> {
 		this.currentMutation.data._index =
 			this.state.selectionStart - this.currentMutation.data.text.length + 1;
 
+		if (this.currentMutation.data._index < this.state.lastMutation.data._index) {
+			this.setState({
+				highlightOffset: this.state.highlightOffset + 1
+			})
+		}
+
 		if (this.currentMutation.data.length > 20) {
 			this.sendMutation();
 		}
@@ -163,8 +171,6 @@ class Conversation extends Component<any, State> {
 	}
 
 	updateOrigin() {
-		console.log("current origin: ", this.currentMutation.origin)
-		console.log("lastMutation origin: ", this.state.lastMutation.origin)
 		if (this.currentMutation.origin === undefined) {
 			this.currentMutation.origin = {};
 			const { lastMutation } = this.state;
@@ -178,12 +184,13 @@ class Conversation extends Component<any, State> {
 	}
 
 	highlightLastMutation() {
-		const { text, lastMutation } = this.state;
+		const { text, lastMutation, highlightOffset } = this.state;
 		if (lastMutation !== undefined) {
-			const stringLeft = text.slice(0, lastMutation.data._index);
+			const stringLeft = text.slice(0, lastMutation.data._index + highlightOffset);
 			const stringRight = text.slice(
-				lastMutation.data._index + lastMutation.data.length
+				lastMutation.data._index + lastMutation.data.length + highlightOffset
 			);
+
 			const stringHighlight = lastMutation.data.text;
 
 			const array = [stringLeft, stringHighlight, stringRight];
@@ -201,7 +208,7 @@ class Conversation extends Component<any, State> {
 	render() {
 		return (
 			<div className="textBox">
-				<h1>{this.state.id}</h1>
+				<h3>{this.state.id}</h3>
 				<textarea
 					ref={(input) => (this.input = input)}
 					value={this.state.text ? this.state.text : ""}
