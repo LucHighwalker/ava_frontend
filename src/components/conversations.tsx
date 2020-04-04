@@ -17,6 +17,10 @@ export default class Conversations extends Component<Props, State> {
 	};
 
 	componentDidMount() {
+		this.getConversations();
+	}
+
+	getConversations() {
 		fetch("http://localhost:3000/conversations")
 			.then((res) => res.json())
 			.then((res) => {
@@ -27,7 +31,11 @@ export default class Conversations extends Component<Props, State> {
 	}
 
 	deleteConvo(id: String) {
-		console.log(`deleting(${id})`);
+		fetch(`http://localhost:3000/conversations/${id}`, {
+			method: "delete",
+		})
+			.then((res) => res.json())
+			.then((_) => this.getConversations());
 	}
 
 	render() {
