@@ -1,4 +1,9 @@
-import React, { Component } from "react";
+import React, {
+	Component,
+	ChangeEvent,
+	MouseEvent,
+	KeyboardEvent,
+} from "react";
 import { withRouter } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 
@@ -9,6 +14,21 @@ type State = {
 	text: string | undefined;
 	selectionStart: number;
 	selectionEnd: number;
+};
+
+type Mutation = {
+	author: string;
+	conversationId: string;
+	data: {
+		_index: number;
+		length: number;
+		text: string;
+		type: "insert" | "delete";
+	};
+	origin: {
+		Alice: number;
+		Bob: number;
+	};
 };
 
 class Conversation extends Component<any, State> {
@@ -22,6 +42,20 @@ class Conversation extends Component<any, State> {
 	};
 
 	input: any = null;
+	currentMutation: Mutation = {
+		author: "Bob",
+		conversationId: "",
+		data: {
+			_index: 0,
+			length: 0,
+			text: "",
+			type: "insert",
+		},
+		origin: {
+			Alice: 0,
+			Bob: 0,
+		},
+	};
 
 	componentDidMount() {
 		const { id } = this.props.match.params;
@@ -40,16 +74,26 @@ class Conversation extends Component<any, State> {
 		socket.emit("message", "yaaaayyyy");
 	}
 
+	updateMutation(event: KeyboardEvent<HTMLTextAreaElement>) {
+		const char = String.fromCharCode(event.charCode);
+		this.currentMutation.data.text += char;
+		this.currentMutation.data.length = this.currentMutation.data.text.length;
+		this.currentMutation.data._index =
+			this.state.selectionStart - this.currentMutation.data.text.length;
+
+		console.log(this.currentMutation)
+	}
+
 	render() {
 		return (
 			<div>
 				<h1>{this.state.id}</h1>
 				<textarea
 					ref={(input) => (this.input = input)}
-					value={this.state.text}
-					onChange={(event) => {
+					value={this.state.text ? this.state.text : ""}
+					onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
 						if (typeof this.input === "object" && this.input !== null) {
-							const selectionStart = this.input.selectionStart;
+							const { selectionStart } = this.input;
 							if (typeof selectionStart === "number") {
 								this.setState({
 									text: event.target.value,
@@ -59,18 +103,19 @@ class Conversation extends Component<any, State> {
 								return;
 							}
 						}
-						this.setState({ text: event.target.value });
 					}}
-					onClick={(event) => {
+					onClick={(_: MouseEvent<HTMLTextAreaElement>) => {
 						if (typeof this.input === "object" && this.input !== null) {
-							const selectionStart = this.input.selectionStart;
-							const selectionEnd = this.input.selectionEnd;
+							const {selectionStart, selectionEnd} = this.input;
 							this.setState({
 								selectionStart: selectionStart,
 								selectionEnd: selectionEnd,
 							});
 						}
 					}}
+					onKeyPress={(event: KeyboardEvent<HTMLTextAreaElement>) =>
+						this.updateMutation(event)
+					}
 				/>
 				<br />
 				<span>selectionStart: {this.state.selectionStart}</span>
