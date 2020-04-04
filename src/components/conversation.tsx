@@ -3,6 +3,7 @@ import React, {
 	ChangeEvent,
 	MouseEvent,
 	KeyboardEvent,
+	UIEvent,
 } from "react";
 import { withRouter } from "react-router-dom";
 import socketIOClient from "socket.io-client";
@@ -110,6 +111,9 @@ class Conversation extends Component<any, State> {
 			console.log("sending mutation");
 			this.state.socket.emit("mutation", this.currentMutation);
 			this.resetMutation();
+			this.setState({
+				highlightOffset: 0
+			})
 		}
 	}
 
@@ -134,17 +138,19 @@ class Conversation extends Component<any, State> {
 			this.sendMutation();
 		}
 
-		this.updateOrigin()
+		this.updateOrigin();
 
 		this.currentMutation.data.text += char;
 		this.currentMutation.data.length = this.currentMutation.data.text.length;
 		this.currentMutation.data._index =
 			this.state.selectionStart - this.currentMutation.data.text.length + 1;
 
-		if (this.currentMutation.data._index < this.state.lastMutation.data._index) {
+		if (
+			this.currentMutation.data._index < this.state.lastMutation.data._index
+		) {
 			this.setState({
-				highlightOffset: this.state.highlightOffset + 1
-			})
+				highlightOffset: this.state.highlightOffset + 1,
+			});
 		}
 
 		if (this.currentMutation.data.length > 20) {
@@ -162,7 +168,7 @@ class Conversation extends Component<any, State> {
 			this.currentMutation.data.type = "delete";
 		}
 
-		this.updateOrigin()
+		this.updateOrigin();
 
 		this.currentMutation.data._index = this.state.selectionStart;
 
@@ -176,7 +182,7 @@ class Conversation extends Component<any, State> {
 			const { lastMutation } = this.state;
 			Object.keys(lastMutation.origin).forEach((key: string) => {
 				this.currentMutation.origin[key] = lastMutation.origin[key];
-			})
+			});
 			if (this.currentMutation.origin[lastMutation.author] === undefined)
 				this.currentMutation.origin[lastMutation.author] = 1;
 			else this.currentMutation.origin[lastMutation.author]++;
@@ -186,7 +192,10 @@ class Conversation extends Component<any, State> {
 	highlightLastMutation() {
 		const { text, lastMutation, highlightOffset } = this.state;
 		if (lastMutation !== undefined) {
-			const stringLeft = text.slice(0, lastMutation.data._index + highlightOffset);
+			const stringLeft = text.slice(
+				0,
+				lastMutation.data._index + highlightOffset
+			);
 			const stringRight = text.slice(
 				lastMutation.data._index + lastMutation.data.length + highlightOffset
 			);
@@ -226,11 +235,14 @@ class Conversation extends Component<any, State> {
 						this.updateSelection();
 						this.insertMutation(event);
 					}}
-					onKeyUp={(event) => {
+					onKeyUp={(event: KeyboardEvent<HTMLTextAreaElement>) => {
 						if (event.keyCode === 8) {
 							this.deleteMutation();
 						}
 					}}
+					// onScroll={(event: UIEvent<HTMLTextAreaElement>) => {
+					// 	console.log(event);
+					// }}
 				/>
 				<div className="highlightBox">
 					<div className="highlights">{this.highlightLastMutation()}</div>

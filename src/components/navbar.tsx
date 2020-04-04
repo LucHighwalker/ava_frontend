@@ -20,20 +20,26 @@ export default class Navbar extends Component<Props, State> {
 
 	render() {
 		return (
-			<nav className={this.state.hidden ? "navbar hidden" : "navbar"}>
-				<ul>
-					<li>
-						<Link to="/">Home</Link>
-					</li>
-					<li>
-						<Link to="/conversation">Conversations</Link>
-					</li>
-				</ul>
-				<button
-					className="navButton"
-					onClick={() => this.setState({ hidden: !this.state.hidden })}
-				></button>
-			</nav>
+			<div>
+				<nav className={this.state.hidden ? "navbar hidden" : "navbar"}>
+					<ul>
+						<li>
+							<Link to="/">Home</Link>
+						</li>
+						<li>
+							<Link to="/conversation">Conversations</Link>
+						</li>
+					</ul>
+					<button
+						className="navButton"
+						onClick={() => this.setState({ hidden: !this.state.hidden })}
+					></button>
+				</nav>
+				<div
+					className={this.state.hidden ? "navOffClick hidden" : "navOffClick"}
+					onClick={() => this.setState({ hidden: true })}
+				></div>
+			</div>
 		);
 	}
 }

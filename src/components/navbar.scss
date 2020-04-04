@@ -1,25 +1,42 @@
 .navbar {
-  height: 100%;
-  background-color: #028a8a;
-  position: fixed;
-  top: 0;
-  left: 0;
-  transition: all 1s ease;
+	height: 100%;
+	background-color: #028a8a;
+	position: fixed;
+	top: 0;
+	left: 0;
+	transition: all 1s ease;
+	z-index: 100;
 
-  ul {
-    list-style: none;
-  }
+	ul {
+		list-style: none;
+	}
 
-  .navButton {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    height: 50px;
-    width: 50px;
-    background-color: grey;
-  }
+	.navButton {
+		position: fixed;
+		bottom: 10px;
+		left: 10px;
+		height: 50px;
+		width: 50px;
+		background-color: grey;
+	}
 }
 
-.hidden {
-  left: -300px
+.navbar.hidden {
+	left: -300px;
+}
+
+.navOffClick {
+	background-color: #00000036;
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 90;
+	transition: all 1s ease;
+}
+
+.navOffClick.hidden {
+	background-color: transparent;
+	pointer-events: none;
 }
