@@ -18,6 +18,12 @@ export default class Navbar extends Component<Props, State> {
 		hidden: true,
 	};
 
+	componentDidMount() {
+		setTimeout(() => {
+			this.setState({ hidden: false });
+		}, 250);
+	}
+
 	render() {
 		return (
 			<div>
