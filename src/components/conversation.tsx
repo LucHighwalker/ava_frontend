@@ -66,10 +66,19 @@ class Conversation extends Component<any, State> {
 		const socket = socketIOClient("http://localhost:3000", {
 			path: "/socket",
 		});
+		socket.emit("message", "yaaaayyyy");
+		socket.on(`mutationRecieved-${id}`, (data: any) => {
+			console.log("Mutation for this convo received")
+			console.log(data)
+		})
 		this.setState({
 			socket,
 		});
-		socket.emit("message", "yaaaayyyy");
+	}
+
+	sendMutation() {
+		console.log("sending mutation")
+		this.state.socket.emit("mutation", this.currentMutation)
 	}
 
 	updateSelection() {
@@ -83,14 +92,15 @@ class Conversation extends Component<any, State> {
 	}
 
 	updateMutation(event: KeyboardEvent<HTMLTextAreaElement>) {
-		const char = String.fromCharCode(event.charCode);
+		const char =
+			event.keyCode !== 13 ? String.fromCharCode(event.charCode) : "\n";
 
 		if (this.currentMutation.conversationId === "")
 			this.currentMutation.conversationId = this.state.id;
 		this.currentMutation.data.text += char;
 		this.currentMutation.data.length = this.currentMutation.data.text.length;
 		this.currentMutation.data._index =
-			this.state.selectionStart - this.currentMutation.data.text.length;
+			this.state.selectionStart - this.currentMutation.data.text.length + 1;
 
 		if (this.currentMutation.origin === undefined) {
 			const { lastMutation } = this.state;
@@ -98,6 +108,10 @@ class Conversation extends Component<any, State> {
 			if (this.currentMutation.origin[lastMutation.author] === undefined)
 				this.currentMutation.origin[lastMutation.author] = 1;
 			else this.currentMutation.origin[lastMutation.author]++;
+		}
+
+		if (this.currentMutation.data.text.length > 5) {
+			this.sendMutation()
 		}
 	}
 
@@ -121,6 +135,7 @@ class Conversation extends Component<any, State> {
 						this.updateSelection();
 						this.updateMutation(event);
 					}}
+					onKeyUp={(event) => console.log(event.keyCode)}
 				/>
 				<br />
 				<span>selectionStart: {this.state.selectionStart}</span>
