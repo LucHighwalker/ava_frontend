@@ -132,18 +132,12 @@ class Conversation extends Component<any, State> {
 			this.sendMutation();
 		}
 
+		this.updateOrigin()
+
 		this.currentMutation.data.text += char;
 		this.currentMutation.data.length = this.currentMutation.data.text.length;
 		this.currentMutation.data._index =
 			this.state.selectionStart - this.currentMutation.data.text.length + 1;
-
-		if (this.currentMutation.origin === undefined) {
-			const { lastMutation } = this.state;
-			this.currentMutation.origin = lastMutation.origin;
-			if (this.currentMutation.origin[lastMutation.author] === undefined)
-				this.currentMutation.origin[lastMutation.author] = 1;
-			else this.currentMutation.origin[lastMutation.author]++;
-		}
 
 		if (this.currentMutation.data.length > 20) {
 			this.sendMutation();
@@ -160,18 +154,27 @@ class Conversation extends Component<any, State> {
 			this.currentMutation.data.type = "delete";
 		}
 
-		if (this.currentMutation.origin === undefined) {
-			const { lastMutation } = this.state;
-			this.currentMutation.origin = lastMutation.origin;
-			if (this.currentMutation.origin[lastMutation.author] === undefined)
-				this.currentMutation.origin[lastMutation.author] = 1;
-			else this.currentMutation.origin[lastMutation.author]++;
-		}
+		this.updateOrigin()
 
 		this.currentMutation.data._index = this.state.selectionStart;
 
 		this.currentMutation.data.length += 1;
 		console.log(this.currentMutation);
+	}
+
+	updateOrigin() {
+		console.log("current origin: ", this.currentMutation.origin)
+		console.log("lastMutation origin: ", this.state.lastMutation.origin)
+		if (this.currentMutation.origin === undefined) {
+			this.currentMutation.origin = {};
+			const { lastMutation } = this.state;
+			Object.keys(lastMutation.origin).forEach((key: string) => {
+				this.currentMutation.origin[key] = lastMutation.origin[key];
+			})
+			if (this.currentMutation.origin[lastMutation.author] === undefined)
+				this.currentMutation.origin[lastMutation.author] = 1;
+			else this.currentMutation.origin[lastMutation.author]++;
+		}
 	}
 
 	highlightLastMutation() {
