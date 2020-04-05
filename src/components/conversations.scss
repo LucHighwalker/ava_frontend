@@ -51,6 +51,16 @@
 			float: right;
 			margin: 10px;
 			margin-top: -75px;
+    }
+    
+		.favorite {
+			float: right;
+			margin: 10px;
+			margin-top: -150px;
 		}
-	}
+  }
+  
+  li.favorited {
+    background-color: gold;
+  }
 }
