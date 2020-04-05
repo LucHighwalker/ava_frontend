@@ -28,18 +28,29 @@ export default class Conversations extends Component<Props, State> {
 			});
 	}
 
-	deleteConvo(id: String) {
+	createConversation() {
+		fetch(`http://localhost:3000/conversations`, {
+			method: "post",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				creator: this.props.user,
+			}),
+		}).then((_) => this.getConversations());
+	}
+
+	deleteConversation(id: String) {
 		fetch(`http://localhost:3000/conversations/${id}`, {
 			method: "delete",
-		})
-			.then((res) => res.json())
-			.then((_) => this.getConversations());
+		}).then((_) => this.getConversations());
 	}
 
 	render() {
 		const { conversations } = this.state;
 		return (
 			<div>
+				<button onClick={() => this.createConversation()}>+</button>
 				<ul>
 					{conversations.map((convo: any, i: number) => (
 						<li key={i}>
@@ -47,7 +58,7 @@ export default class Conversations extends Component<Props, State> {
 								<span>id: {convo._id}</span>
 								<span>created by: {convo.creator}</span>
 							</Link>
-							<button onClick={() => this.deleteConvo(convo._id)}>
+							<button onClick={() => this.deleteConversation(convo._id)}>
 								delete
 							</button>
 						</li>

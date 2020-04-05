@@ -18,7 +18,7 @@ type State = {
 
 export default class App extends Component<any, State> {
 	state: State = {
-		user: "Anonymous",
+		user: "",
 	};
 
 	componentDidMount() {

@@ -9,9 +9,9 @@ import socketIOClient from "socket.io-client";
 
 import "./conversation.scss";
 
-interface Props extends RouteComponentProps {
-	user: string;
-}
+// interface Props extends RouteComponentProps {
+// 	user: string;
+// }
 
 type State = {
 	socket: any;
@@ -35,7 +35,7 @@ type Mutation = {
 	origin: any;
 };
 
-class Conversation extends Component<Props | any, State> {
+class Conversation extends Component<any, State> {
 	state: State = {
 		socket: undefined,
 		id: undefined,
@@ -60,7 +60,7 @@ class Conversation extends Component<Props | any, State> {
 		origin: undefined,
 	};
 
-	constructor(props: Props) {
+	constructor(props: any) {
 		super(props);
 
 		this.highlightLastMutation = this.highlightLastMutation.bind(this);
@@ -69,7 +69,7 @@ class Conversation extends Component<Props | any, State> {
 	componentDidMount() {
 		const { id } = this.props.match.params;
 		this.setState({ id });
-		this.resetMutation()
+		this.resetMutation();
 
 		fetch("http://localhost:3000/conversations/read/" + id)
 			.then((res) => res.json())
@@ -110,12 +110,14 @@ class Conversation extends Component<Props | any, State> {
 			this.currentMutation.data.length > 0 ||
 			this.currentMutation.data.type === "delete"
 		) {
-			console.log("sending mutation");
+			if (this.currentMutation.conversationId === undefined)
+				this.currentMutation.conversationId = this.state.id;
+
 			this.state.socket.emit("mutation", this.currentMutation);
 			this.resetMutation();
 			this.setState({
-				highlightOffset: 0
-			})
+				highlightOffset: 0,
+			});
 		}
 	}
 
@@ -148,6 +150,7 @@ class Conversation extends Component<Props | any, State> {
 			this.state.selectionStart - this.currentMutation.data.text.length + 1;
 
 		if (
+			this.state.lastMutation !== undefined &&
 			this.currentMutation.data._index < this.state.lastMutation.data._index
 		) {
 			this.setState({
@@ -175,10 +178,14 @@ class Conversation extends Component<Props | any, State> {
 		this.currentMutation.data._index = this.state.selectionStart;
 
 		this.currentMutation.data.length += 1;
-		console.log(this.currentMutation);
 	}
 
 	updateOrigin() {
+		if (this.state.lastMutation === undefined) {
+			this.currentMutation.origin = {};
+			this.currentMutation.origin[this.props.user] = 0;
+		}
+
 		if (this.currentMutation.origin === undefined) {
 			this.currentMutation.origin = {};
 			const { lastMutation } = this.state;
