@@ -11,12 +11,12 @@ type State = {
 
 export default class Navbar extends Component<Props, State> {
 	state: State = {
-		hidden: false,
+		hidden: true,
 	};
 
 	componentDidMount() {
 		setTimeout(() => {
-			this.setState({ hidden: true });
+			this.setState({ hidden: false });
 		}, 250);
 	}
 
