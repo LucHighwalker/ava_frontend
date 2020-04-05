@@ -1,11 +1,13 @@
 .navBar {
 	height: 100vh;
-	background-color: #028a8a;
+	background-color: #028a8a86;
 	position: fixed;
 	top: 0;
 	left: 0;
 	transition: all 1s ease;
 	z-index: 100;
+
+	box-shadow: 10px 0px 20px #535353;
 
 	ul {
 		list-style: none;

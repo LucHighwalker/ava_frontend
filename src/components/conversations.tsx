@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 import { Props } from "../interfaces";
 
-import "./conversations.scss"
+import "./conversations.scss";
 
 type State = {
 	conversations: object[];
@@ -49,18 +50,26 @@ export default class Conversations extends Component<Props, State> {
 	render() {
 		const { conversations } = this.state;
 		return (
-			<div>
-				<button onClick={() => this.createConversation()}>+</button>
-				<ul className="conversationList">
-					{conversations.map((convo: any, i: number) => (
+			<div className="conversationList">
+				<Button className="add" variant="success" onClick={() => this.createConversation()}>
+					New Conversation
+				</Button>
+				<ul>
+					{conversations.reverse().map((convo: any, i: number) => (
 						<li key={i}>
 							<Link to={"/conversation/" + convo._id}>
-								<span>id: {convo._id}</span>
-								<span>created by: {convo.creator}</span>
+								<h2>Conversation #:{conversations.length - i}</h2>
+								<span className="created">created by: {convo.creator}</span>
+								<br />
+								<span className="id">id: {convo._id}</span>
 							</Link>
-							<button className="delete" onClick={() => this.deleteConversation(convo._id)}>
+							<Button
+								className="delete"
+								variant="danger"
+								onClick={() => this.deleteConversation(convo._id)}
+							>
 								delete
-							</button>
+							</Button>
 						</li>
 					))}
 				</ul>

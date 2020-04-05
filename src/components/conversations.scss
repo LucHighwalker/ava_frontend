@@ -1,11 +1,56 @@
 .conversationList {
+  margin-top: 50px;
   list-style: none;
-
-  li {
-    display: block;
-    background-color: #bebebe;
-
-    margin: 25px;
-    height: 100px;
+  
+  .add {
+    position: sticky;
+    top: 10px;
   }
+
+	li {
+		display: block;
+		background-color: #bebebe;
+
+		margin: 25px;
+		height: 150px;
+		width: 50vw;
+
+		border-radius: 15px;
+
+    box-shadow: 5px 5px 10px #535353;
+    border-style: ridge;
+
+		a {
+			height: 100%;
+			width: 100%;
+
+			span {
+				float: left;
+				left: 0;
+				bottom: 0;
+				margin: 10px;
+				width: 100%;
+				text-align: left;
+			}
+
+			.id {
+				font-size: 20px;
+			}
+
+			.created {
+				font-size: 29px;
+			}
+		}
+
+		a:hover {
+			color: #313131;
+			text-decoration: none;
+		}
+
+		.delete {
+			float: right;
+			margin: 10px;
+			margin-top: -75px;
+		}
+	}
 }
