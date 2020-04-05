@@ -19,7 +19,7 @@ export default class Conversations extends Component<Props, State> {
 	}
 
 	getConversations() {
-		fetch("http://localhost:3000/conversations")
+		fetch("https://safe-anchorage-85606.herokuapp.com/conversations")
 			.then((res) => res.json())
 			.then((res) => {
 				this.setState({
@@ -29,7 +29,7 @@ export default class Conversations extends Component<Props, State> {
 	}
 
 	createConversation() {
-		fetch(`http://localhost:3000/conversations`, {
+		fetch(`https://safe-anchorage-85606.herokuapp.com/conversations`, {
 			method: "post",
 			headers: {
 				"Content-Type": "application/json",
@@ -41,7 +41,7 @@ export default class Conversations extends Component<Props, State> {
 	}
 
 	deleteConversation(id: String) {
-		fetch(`http://localhost:3000/conversations/${id}`, {
+		fetch(`https://safe-anchorage-85606.herokuapp.com/conversations/${id}`, {
 			method: "delete",
 		}).then((_) => this.getConversations());
 	}

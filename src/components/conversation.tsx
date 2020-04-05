@@ -4,7 +4,7 @@ import React, {
 	MouseEvent,
 	KeyboardEvent,
 } from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 
 import "./conversation.scss";
@@ -16,6 +16,7 @@ import "./conversation.scss";
 type State = {
 	socket: any;
 	id: string | undefined;
+	interval: NodeJS.Timeout;
 	text: string;
 	lastMutation: any;
 	selectionStart: number;
@@ -39,6 +40,9 @@ class Conversation extends Component<any, State> {
 	state: State = {
 		socket: undefined,
 		id: undefined,
+		interval: setInterval(() => {
+			this.sendMutation();
+		}, 2500),
 		text: "",
 		lastMutation: undefined,
 		selectionStart: 0,
@@ -71,17 +75,23 @@ class Conversation extends Component<any, State> {
 		this.setState({ id });
 		this.resetMutation();
 
-		fetch("http://localhost:3000/conversations/read/" + id)
+		fetch("https://safe-anchorage-85606.herokuapp.com/conversations/read/" + id)
 			.then((res) => res.json())
 			.then((res) =>
 				this.setState({ text: res.text, lastMutation: res.lastMutation })
 			);
 
-		const socket = socketIOClient("http://localhost:3000", {
-			path: "/socket",
-		});
+		const socket = socketIOClient(
+			"https://safe-anchorage-85606.herokuapp.com/",
+			{
+				path: "/socket",
+			}
+		);
+
+		console.log(`mutationRecieved-${id}`);
 		socket.on(`mutationRecieved-${id}`, (lastMutation: any) => {
 			console.log("new mutation received", lastMutation);
+			this.applyMutation(lastMutation);
 			this.setState({
 				lastMutation,
 			});
@@ -89,6 +99,10 @@ class Conversation extends Component<any, State> {
 		this.setState({
 			socket,
 		});
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.state.interval);
 	}
 
 	resetMutation() {
@@ -113,12 +127,29 @@ class Conversation extends Component<any, State> {
 			if (this.currentMutation.conversationId === undefined)
 				this.currentMutation.conversationId = this.state.id;
 
+			this.updateOrigin()
+
 			this.state.socket.emit("mutation", this.currentMutation);
-			this.resetMutation();
 			this.setState({
+				lastMutation: this.currentMutation,
 				highlightOffset: 0,
 			});
+			this.resetMutation();
 		}
+	}
+
+	applyMutation(mutation: Mutation) {
+		let { text } = this.state;
+		const start = mutation.data._index;
+
+		if (mutation.data.type === "insert") {
+			text = text.slice(0, start) + mutation.data.text + text.slice(start);
+		} else if (mutation.data.type === "delete") {
+			const end = start + mutation.data.length;
+			text = text.slice(0, start) + text.slice(end);
+		}
+
+		this.setState({ text });
 	}
 
 	updateSelection() {
@@ -141,8 +172,6 @@ class Conversation extends Component<any, State> {
 		if (this.currentMutation.data.type === "delete") {
 			this.sendMutation();
 		}
-
-		this.updateOrigin();
 
 		this.currentMutation.data.text += char;
 		this.currentMutation.data.length = this.currentMutation.data.text.length;
@@ -173,8 +202,6 @@ class Conversation extends Component<any, State> {
 			this.currentMutation.data.type = "delete";
 		}
 
-		this.updateOrigin();
-
 		this.currentMutation.data._index = this.state.selectionStart;
 
 		this.currentMutation.data.length += 1;
@@ -184,9 +211,7 @@ class Conversation extends Component<any, State> {
 		if (this.state.lastMutation === undefined) {
 			this.currentMutation.origin = {};
 			this.currentMutation.origin[this.props.user] = 0;
-		}
-
-		if (this.currentMutation.origin === undefined) {
+		}else if (this.currentMutation.origin === undefined) {
 			this.currentMutation.origin = {};
 			const { lastMutation } = this.state;
 			Object.keys(lastMutation.origin).forEach((key: string) => {
