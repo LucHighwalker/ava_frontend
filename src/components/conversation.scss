@@ -9,14 +9,15 @@ textarea {
 
 .highlights,
 textarea {
+  margin: 0;
 	padding: 10px;
-	font: 20px/28px "Open Sans", sans-serif;
+	font: 28px "Open Sans", sans-serif !important;
 	letter-spacing: 1px;
 	text-align: left;
 }
 
 .textBox {
-  background-color: red;
+	background-color: red;
 
 	*,
 	*::before,
@@ -35,14 +36,14 @@ textarea {
 		background-color: transparent;
 		overflow: auto;
 		resize: none;
-    transition: transform 1s;
-    border-radius: 5px;
-  }
-  
-  textarea:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px #c6aada;
-  }
+		transition: transform 1s;
+		border-radius: 5px;
+	}
+
+	textarea:focus {
+		outline: none;
+		box-shadow: 0 0 0 2px #c6aada;
+	}
 
 	.highlightBox {
 		position: absolute;
@@ -56,11 +57,11 @@ textarea {
 		.highlights {
 			white-space: pre-wrap;
 			word-wrap: break-word;
-      color: transparent;
-      
-      .highlighted {
-        background-color: green;
-      }
+			color: transparent;
+
+			.highlighted {
+				background-color: #028a8a;
+			}
 		}
 	}
 }

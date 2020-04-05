@@ -6,6 +6,8 @@ import * as serviceWorker from "./serviceWorker";
 
 import { CookiesProvider } from "react-cookie";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 ReactDOM.render(
 	<React.StrictMode>
 		<CookiesProvider>

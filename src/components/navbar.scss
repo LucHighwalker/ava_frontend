@@ -1,4 +1,4 @@
-.navbar {
+.navBar {
 	height: 100vh;
 	background-color: #028a8a;
 	position: fixed;
@@ -21,7 +21,7 @@
 	}
 }
 
-.navbar.hidden {
+.navBar.hidden {
 	left: -300px;
 }
 

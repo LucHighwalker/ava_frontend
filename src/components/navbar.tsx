@@ -25,7 +25,7 @@ export default class Navbar extends Component<Props, State> {
 		const {hidden} = this.state;
 		return (
 			<div>
-				<nav className={hidden ? "navbar hidden" : "navbar"}>
+				<nav className={hidden ? "navBar hidden" : "navBar"}>
 					<h3>{user}</h3>
 					<ul>
 						<li>
