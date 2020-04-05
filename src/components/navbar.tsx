@@ -5,19 +5,23 @@ import { Props } from "../interfaces";
 
 import "./navbar.scss";
 
+interface NavProps extends Props {
+	changeUser: Function;
+}
+
 type State = {
 	hidden: boolean;
 };
 
-export default class Navbar extends Component<Props, State> {
+export default class Navbar extends Component<NavProps, State> {
 	state: State = {
-		hidden: true,
+		hidden: false,
 	};
 
 	componentDidMount() {
 		setTimeout(() => {
-			this.setState({ hidden: false });
-		}, 250);
+			this.setState({ hidden: true });
+		}, 500);
 	}
 
 	render() {
@@ -26,27 +30,31 @@ export default class Navbar extends Component<Props, State> {
 		return (
 			<div>
 				<nav className={hidden ? "navBar hidden" : "navBar"}>
-					<h3>{user}</h3>
+					<div className="user">
+						<span onClick={() => this.props.changeUser()}>change user</span>
+						<h3>Welcome back,</h3>
+						<h3>{user}</h3>
+					</div>
 					<ul>
 						<li>
-							<Link to="/">Home</Link>
+							<Link to="/">
+								<span>Home</span>
+							</Link>
 						</li>
 						<li>
-							<Link to="/conversation">Conversations</Link>
+							<Link to="/conversation">
+								<span>Conversation</span>
+							</Link>
 						</li>
 					</ul>
 					<div
 						className={hidden ? "navButton" : "navButton open"}
 						onClick={() => this.setState({ hidden: !hidden })}
 					>
-						<div className={hidden ? "bar1" : "bar1 open"}></div>
-						<div className={hidden ? "bar2" : "bar2 open"}></div>
-						<div className={hidden ? "bar3" : "bar3 open"}></div>
+						<div className={hidden ? "bar1" : "bar1 open"} />
+						<div className={hidden ? "bar2" : "bar2 open"} />
+						<div className={hidden ? "bar3" : "bar3 open"} />
 					</div>
-					{/* <button
-						className="navButton"
-						onClick={() => this.setState({ hidden: !hidden })}
-					></button> */}
 				</nav>
 				<div
 					className={hidden ? "navOffClick hidden" : "navOffClick"}

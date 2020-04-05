@@ -49,7 +49,7 @@ class App extends Component<ReactCookieProps, State> {
 			<div className="App">
 				<header className="App-header">
 					<Router>
-						<Navbar user={user}></Navbar>
+						<Navbar user={user} changeUser={() => this.askName()}></Navbar>
 
 						<Route
 							path="/"
