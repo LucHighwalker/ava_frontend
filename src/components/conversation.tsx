@@ -244,33 +244,37 @@ class Conversation extends Component<any, State> {
 
 	render() {
 		return (
-			<div className="textBox">
-				<h3>{this.state.id}</h3>
-				<textarea
-					ref={(input) => (this.input = input)}
-					value={this.state.text ? this.state.text : ""}
-					onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-						this.updateSelection();
-						this.setState({
-							text: event.target.value,
-						});
-					}}
-					onClick={(_: MouseEvent<HTMLTextAreaElement>) => {
-						this.sendMutation();
-						this.updateSelection();
-					}}
-					onKeyPress={(event: KeyboardEvent<HTMLTextAreaElement>) => {
-						this.updateSelection();
-						this.insertMutation(event);
-					}}
-					onKeyUp={(event: KeyboardEvent<HTMLTextAreaElement>) => {
-						if (event.keyCode === 8) {
-							this.deleteMutation();
-						}
-					}}
-				/>
-				<div className="highlightBox">
-					<div className="highlights">{this.highlightLastMutation()}</div>
+			<div className="outerBox">
+				<div className="textBox">
+					<textarea
+						ref={(input) => (this.input = input)}
+						value={this.state.text ? this.state.text : ""}
+						onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+							this.updateSelection();
+							this.setState({
+								text: event.target.value,
+							});
+						}}
+						onClick={(_: MouseEvent<HTMLTextAreaElement>) => {
+							this.sendMutation();
+							this.updateSelection();
+						}}
+						onKeyPress={(event: KeyboardEvent<HTMLTextAreaElement>) => {
+							this.updateSelection();
+							this.insertMutation(event);
+						}}
+						onKeyUp={(event: KeyboardEvent<HTMLTextAreaElement>) => {
+							if (event.keyCode === 8) {
+								this.deleteMutation();
+							}
+						}}
+					/>
+					<div className="highlightBox">
+						<div className="highlights">{this.highlightLastMutation()}</div>
+					</div>
+				</div>
+				<div className="header">
+					<h3>conversation id: {this.state.id}</h3>
 				</div>
 			</div>
 		);

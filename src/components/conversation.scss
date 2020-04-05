@@ -1,23 +1,36 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans");
 
-.textBox,
+.outerBox,
 .highlightBox,
 textarea {
-	width: 75%;
+	width: 75vw;
 	height: 500px;
 }
 
+.highlightBox,
 .highlights,
 textarea {
-  margin: 0;
-	padding: 10px;
+	margin: 0;
 	font: 28px "Open Sans", sans-serif !important;
+	border-radius: 15px !important;
 	letter-spacing: 1px;
 	text-align: left;
 }
 
 .textBox {
-	background-color: red;
+	display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.outerBox {
+	background-color: #bebebe;
+	height: 600px;
+
+	border-radius: 15px;
+
+	box-shadow: 5px 5px 10px #535353;
+	border-style: ridge;
 
 	*,
 	*::before,
@@ -31,7 +44,6 @@ textarea {
 		z-index: 2;
 		margin: 0;
 		border: 2px solid #74637f;
-		border-radius: 0;
 		color: #444;
 		background-color: transparent;
 		overflow: auto;
@@ -60,8 +72,15 @@ textarea {
 			color: transparent;
 
 			.highlighted {
-				background-color: #028a8a;
+				background-color: #028a8a77;
+				border-radius: 10px;
+				box-shadow: 0px 0px 10px #028a8aad;
 			}
 		}
+	}
+
+	.header {
+		display: block;
+		margin-top: 500px;
 	}
 }
