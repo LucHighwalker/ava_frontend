@@ -15,18 +15,20 @@ import Conversation from "./components/conversation";
 
 type State = {
 	user: string;
+	returning: boolean;
 };
 
 class App extends Component<ReactCookieProps, State> {
 	state: State = {
 		user: "Anonymous",
+		returning: false,
 	};
 
 	componentDidMount() {
 		const { cookies } = this.props;
 		if (this.state.user === "Anonymous") {
 			const user = cookies?.get("fecolab_user");
-			if (user) this.setState({ user });
+			if (user) this.setState({ user, returning: true });
 			else this.askName();
 		}
 	}
@@ -44,18 +46,22 @@ class App extends Component<ReactCookieProps, State> {
 
 	render() {
 		const { cookies } = this.props;
-		const { user } = this.state;
+		const { user, returning } = this.state;
 		return (
 			<div className="App">
 				<header className="App-header">
 					<Router>
-						<Navbar user={user} changeUser={() => this.askName()}></Navbar>
+						<Navbar
+							user={user}
+							changeUser={() => this.askName()}
+							returning={returning}
+						></Navbar>
 
 						<Route
 							path="/"
 							exact
 							render={(props: RouteComponentProps<any>) => (
-								<Home {...props} user={user} />
+								<Home {...props} user={user} returning={returning} />
 							)}
 						/>
 						<Route

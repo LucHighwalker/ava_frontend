@@ -19,7 +19,7 @@ export default class Conversations extends Component<Props, State> {
 
 	componentDidMount() {
 		const { cookies } = this.props;
-		const favorites = cookies?.get("fecolab_favorites");
+		const favorites = cookies?.get("fecolab_favorite");
 
 		if (favorites) this.setState({ favorites });
 
@@ -60,7 +60,7 @@ export default class Conversations extends Component<Props, State> {
 
 		favorites[id] ? (favorites[id] = !favorites[id]) : (favorites[id] = true);
 
-		cookies?.set("fecolab_favorites", favorites);
+		cookies?.set("fecolab_favorite", favorites);
 		this.setState({ favorites });
 	}
 

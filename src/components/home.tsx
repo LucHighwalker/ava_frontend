@@ -4,6 +4,10 @@ import { Props } from "../interfaces";
 
 import "./home.scss";
 
+interface HomeProps extends Props {
+	returning: boolean;
+}
+
 type State = {
 	info: {
 		author: {
@@ -26,7 +30,7 @@ type State = {
 	} | null;
 };
 
-export default class Home extends Component<Props, State> {
+export default class Home extends Component<HomeProps, State> {
 	state: State = {
 		info: null,
 	};
@@ -40,7 +44,9 @@ export default class Home extends Component<Props, State> {
 		const { info } = this.state;
 		return (
 			<div className="home">
-				<p>Welcome, {this.props.user}</p>
+				<p>
+					Welcome{this.props.returning ? " back" : ""}, {this.props.user}
+				</p>
 				<br />
 				{info ? (
 					<div>

@@ -7,6 +7,7 @@ import "./navbar.scss";
 
 interface NavProps extends Props {
 	changeUser: Function;
+	returning: boolean;
 }
 
 type State = {
@@ -32,7 +33,7 @@ export default class Navbar extends Component<NavProps, State> {
 				<nav className={hidden ? "navBar hidden" : "navBar"}>
 					<div className="user">
 						<span onClick={() => this.props.changeUser()}>change user</span>
-						<h3>Welcome back,</h3>
+						<h3>Welcome{this.props.returning ? " back" : ""},</h3>
 						<h3>{user}</h3>
 					</div>
 					<ul>
