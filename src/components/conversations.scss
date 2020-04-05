@@ -1,66 +1,74 @@
 .conversationList {
-  margin-top: 50px;
   list-style: none;
-  
-  .add {
-    position: sticky;
-    top: 10px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  margin-top: 50px;
+  width: 75vw;
 
-	li {
-		display: block;
-		background-color: #bebebe;
+	.add {
+		position: sticky;
+		top: 10px;
+	}
 
-		margin: 25px;
-		height: 150px;
-		width: 50vw;
+	ul {
+		padding: 0;
 
-		border-radius: 15px;
+		li {
+			display: block;
+			background-color: #bebebe;
 
-    box-shadow: 5px 5px 10px #535353;
-    border-style: ridge;
+			margin: 25px;
+			height: 150px;
 
-		a {
-			height: 100%;
-			width: 100%;
+			border-radius: 15px;
 
-			span {
-				float: left;
-				left: 0;
-				bottom: 0;
-				margin: 10px;
+			box-shadow: 5px 5px 10px #535353;
+			border-style: ridge;
+
+			a {
+				height: 100%;
 				width: 100%;
-				text-align: left;
+
+				span {
+					float: left;
+					left: 0;
+					bottom: 0;
+					margin: 10px;
+					width: 100%;
+					text-align: left;
+				}
+
+				.id {
+					font-size: 20px;
+				}
+
+				.created {
+					font-size: 29px;
+				}
 			}
 
-			.id {
-				font-size: 20px;
+			a:hover {
+				color: #313131;
+				text-decoration: none;
 			}
 
-			.created {
-				font-size: 29px;
+			.delete {
+				float: right;
+				margin: 10px;
+				margin-top: -75px;
+			}
+
+			.favorite {
+				float: right;
+				margin: 10px;
+				margin-top: -150px;
 			}
 		}
 
-		a:hover {
-			color: #313131;
-			text-decoration: none;
+		li.favorited {
+			background-color: gold;
 		}
-
-		.delete {
-			float: right;
-			margin: 10px;
-			margin-top: -75px;
-    }
-    
-		.favorite {
-			float: right;
-			margin: 10px;
-			margin-top: -150px;
-		}
-  }
-  
-  li.favorited {
-    background-color: gold;
-  }
+	}
 }

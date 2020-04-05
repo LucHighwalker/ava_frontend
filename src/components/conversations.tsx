@@ -101,6 +101,10 @@ export default class Conversations extends Component<Props, State> {
 						</li>
 					))}
 				</ul>
+				<span>
+					Weird bug I couldn't figure out causes list to rearrange when
+					favoriting, this only happens in production.
+				</span>
 			</div>
 		);
 	}
