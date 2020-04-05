@@ -21,8 +21,8 @@ export default class Navbar extends Component<Props, State> {
 	}
 
 	render() {
-		const {user} = this.props;
-		const {hidden} = this.state;
+		const { user } = this.props;
+		const { hidden } = this.state;
 		return (
 			<div>
 				<nav className={hidden ? "navBar hidden" : "navBar"}>
@@ -35,10 +35,18 @@ export default class Navbar extends Component<Props, State> {
 							<Link to="/conversation">Conversations</Link>
 						</li>
 					</ul>
-					<button
+					<div
+						className={hidden ? "navButton" : "navButton open"}
+						onClick={() => this.setState({ hidden: !hidden })}
+					>
+						<div className={hidden ? "bar1" : "bar1 open"}></div>
+						<div className={hidden ? "bar2" : "bar2 open"}></div>
+						<div className={hidden ? "bar3" : "bar3 open"}></div>
+					</div>
+					{/* <button
 						className="navButton"
 						onClick={() => this.setState({ hidden: !hidden })}
-					></button>
+					></button> */}
 				</nav>
 				<div
 					className={hidden ? "navOffClick hidden" : "navOffClick"}
