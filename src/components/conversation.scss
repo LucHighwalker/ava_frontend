@@ -43,7 +43,7 @@ textarea {
 		position: absolute;
 		z-index: 2;
 		margin: 0;
-		border: 2px solid #74637f;
+		border: 1px solid #0000;
 		color: #444;
 		background-color: transparent;
 		overflow: auto;
@@ -54,7 +54,7 @@ textarea {
 
 	textarea:focus {
 		outline: none;
-		box-shadow: 0 0 0 2px #c6aada;
+		box-shadow: 0px 0px 10px #028a8a77;
 	}
 
 	.highlightBox {

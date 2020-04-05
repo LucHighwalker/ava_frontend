@@ -42,36 +42,46 @@ export default class Home extends Component<Props, State> {
 			<div className="home">
 				<p>Welcome, {this.props.user}</p>
 				<br />
-				<p>
-					This site was written in React and {info?.language} by:{" "}
-					{info?.author.name}
-				</p>
-				<p>
-					If you have any questions or comments, my email is:{" "}
-					<a href={"email:" + info?.author.email}>{info?.author.email}</a>
-				</p>
-				<br />
-				<p>The source code is available on github:</p>
-				<p>
-					backend: <a href={info?.sources.backend}>{info?.sources.backend}</a>
-				</p>
-				<p>
-					frontend:{" "}
-					<a href={info?.sources.frontend}>{info?.sources.frontend}</a>
-				</p>
-				<br />
-				<h1>Answers:</h1>
-				<h2>1. How did you approach the problem?</h2>
-				<p>{info?.answers["1"]}</p>
-				<br />
-				<h2>2. What would you add if you have more time?</h2>
-				<p>{info?.answers["2"]}</p>
-				<br />
-				<h2>
-					3. What would you remove / add in the challenge if you were in the
-					hiring side?
-				</h2>
-				<p>{info?.answers["3"]}</p>
+				{info ? (
+					<div>
+						<p>
+							This site was written in React and {info?.language} by:{" "}
+							{info?.author.name}
+						</p>
+						<p>
+							If you have any questions or comments, my email is:{" "}
+							<a href={"email:" + info?.author.email}>{info?.author.email}</a>
+						</p>
+						<br />
+						<p>The source code is available on github:</p>
+						<p>
+							backend:{" "}
+							<a href={info?.sources.backend}>{info?.sources.backend}</a>
+						</p>
+						<p>
+							frontend:{" "}
+							<a href={info?.sources.frontend}>{info?.sources.frontend}</a>
+						</p>
+						<br />
+						<h1>Answers:</h1>
+						<h2>1. How did you approach the problem?</h2>
+						<p>{info?.answers["1"]}</p>
+						<br />
+						<h2>2. What would you add if you have more time?</h2>
+						<p>{info?.answers["2"]}</p>
+						<br />
+						<h2>
+							3. What would you remove / add in the challenge if you were in the
+							hiring side?
+						</h2>
+						<p>{info?.answers["3"]}</p>
+					</div>
+				) : (
+					<div>
+						<img src="/tenor.gif"></img>
+						<p>Server is loading...</p>
+					</div>
+				)}
 			</div>
 		);
 	}
