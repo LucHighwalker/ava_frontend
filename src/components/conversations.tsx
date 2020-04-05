@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 import { Props } from "../interfaces";
 
+import "./conversations.scss"
+
 type State = {
 	conversations: object[];
 };
@@ -49,14 +51,14 @@ export default class Conversations extends Component<Props, State> {
 		return (
 			<div>
 				<button onClick={() => this.createConversation()}>+</button>
-				<ul>
+				<ul className="conversationList">
 					{conversations.map((convo: any, i: number) => (
 						<li key={i}>
 							<Link to={"/conversation/" + convo._id}>
 								<span>id: {convo._id}</span>
 								<span>created by: {convo.creator}</span>
 							</Link>
-							<button onClick={() => this.deleteConversation(convo._id)}>
+							<button className="delete" onClick={() => this.deleteConversation(convo._id)}>
 								delete
 							</button>
 						</li>
