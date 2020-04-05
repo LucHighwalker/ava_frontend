@@ -113,6 +113,28 @@ class Conversation extends Component<any, State> {
 		};
 	}
 
+	fixMutation() {
+		const { lastMutation } = this.state;
+
+		if (this.currentMutation.conversationId === "")
+			this.currentMutation.conversationId = this.state.id;
+
+		if (lastMutation === undefined) {
+			this.currentMutation.origin = {};
+			this.currentMutation.origin[this.currentMutation.author] = 0;
+		}
+
+		if (this.currentMutation.origin === undefined) {
+			this.currentMutation.origin = {};
+			Object.keys(lastMutation.origin || {}).forEach((key: string) => {
+				this.currentMutation.origin[key] = lastMutation.origin[key];
+			});
+			if (this.currentMutation.origin[lastMutation.author])
+				this.currentMutation.origin[lastMutation.author]++;
+			else this.currentMutation.origin[lastMutation.author] = 1;
+		}
+	}
+
 	sendMutation() {
 		if (
 			this.currentMutation.data.length > 0 ||
@@ -144,16 +166,6 @@ class Conversation extends Component<any, State> {
 		}
 
 		this.setState({ text });
-	}
-
-	updateSelection() {
-		if (typeof this.input === "object" && this.input !== null) {
-			const { selectionStart, selectionEnd } = this.input;
-			this.setState({
-				selectionStart: selectionStart,
-				selectionEnd: selectionEnd,
-			});
-		}
 	}
 
 	insertMutation(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -195,22 +207,13 @@ class Conversation extends Component<any, State> {
 		this.currentMutation.data.length += 1;
 	}
 
-	fixMutation() {
-		const { lastMutation } = this.state;
-
-		if (this.currentMutation.conversationId === "")
-			this.currentMutation.conversationId = this.state.id;
-
-		if (lastMutation === undefined) {
-			this.currentMutation.origin = {};
-		} else if (this.currentMutation.origin === undefined) {
-			this.currentMutation.origin = {};
-			Object.keys(lastMutation.origin).forEach((key: string) => {
-				this.currentMutation.origin[key] = lastMutation.origin[key];
+	updateSelection() {
+		if (typeof this.input === "object" && this.input !== null) {
+			const { selectionStart, selectionEnd } = this.input;
+			this.setState({
+				selectionStart: selectionStart,
+				selectionEnd: selectionEnd,
 			});
-			if (this.currentMutation.origin[lastMutation.author])
-				this.currentMutation.origin[lastMutation.author]++;
-			else this.currentMutation.origin[lastMutation.author] = 1;
 		}
 	}
 
