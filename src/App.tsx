@@ -4,6 +4,7 @@ import {
 	Route,
 	RouteComponentProps,
 } from "react-router-dom";
+import { withCookies, ReactCookieProps } from "react-cookie";
 
 import "./App.scss";
 
@@ -16,50 +17,58 @@ type State = {
 	user: string;
 };
 
-export default class App extends Component<any, State> {
+class App extends Component<ReactCookieProps, State> {
 	state: State = {
-		user: "",
+		user: "Anonymous",
 	};
 
 	componentDidMount() {
-		if (this.state.user === "") {
-			const user = window.prompt("What is your name?", "Anonymous");
-			if (user)
-				this.setState({
-					user,
-				});
+		const { cookies } = this.props;
+		if (this.state.user === "Anonymous") {
+			const user = cookies?.get("fecolab_user");
+			if (user) this.setState({ user });
+			else this.askName();
+		}
+	}
+
+	askName() {
+		const { cookies } = this.props;
+		const user = window.prompt("What is your name?", "Anonymous");
+		if (user) {
+			cookies?.set("fecolab_user", user);
+			this.setState({
+				user,
+			});
 		}
 	}
 
 	render() {
+		const { cookies } = this.props;
+		const { user } = this.state;
 		return (
 			<div className="App">
 				<header className="App-header">
 					<Router>
-						<Navbar user={this.state.user}></Navbar>
+						<Navbar user={user}></Navbar>
 
 						<Route
 							path="/"
 							exact
 							render={(props: RouteComponentProps<any>) => (
-								<Home
-									{...props}
-									user={this.state.user}
-									message="This is home"
-								/>
+								<Home {...props} user={user} />
 							)}
 						/>
 						<Route
 							path="/conversation"
 							exact
 							render={(props: RouteComponentProps<any>) => (
-								<Conversations {...props} user={this.state.user} />
+								<Conversations {...props} cookies={cookies} user={user} />
 							)}
 						/>
 						<Route
 							path="/conversation/:id"
 							render={(props: RouteComponentProps<any>) => (
-								<Conversation {...props} user={this.state.user} />
+								<Conversation {...props} cookies={cookies} user={user} />
 							)}
 						/>
 					</Router>
@@ -68,3 +77,5 @@ export default class App extends Component<any, State> {
 		);
 	}
 }
+
+export default withCookies(App);

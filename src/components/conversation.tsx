@@ -9,10 +9,6 @@ import socketIOClient from "socket.io-client";
 
 import "./conversation.scss";
 
-// interface Props extends RouteComponentProps {
-// 	user: string;
-// }
-
 type State = {
 	socket: any;
 	id: string | undefined;
@@ -88,9 +84,7 @@ class Conversation extends Component<any, State> {
 			}
 		);
 
-		console.log(`mutationRecieved-${id}`);
 		socket.on(`mutationRecieved-${id}`, (lastMutation: any) => {
-			console.log("new mutation received", lastMutation);
 			this.applyMutation(lastMutation);
 			this.setState({
 				lastMutation,
@@ -127,7 +121,7 @@ class Conversation extends Component<any, State> {
 			if (this.currentMutation.conversationId === undefined)
 				this.currentMutation.conversationId = this.state.id;
 
-			this.updateOrigin()
+			this.fixMutation();
 
 			this.state.socket.emit("mutation", this.currentMutation);
 			this.setState({
@@ -166,9 +160,6 @@ class Conversation extends Component<any, State> {
 		const char =
 			event.keyCode !== 13 ? String.fromCharCode(event.charCode) : "\n";
 
-		if (this.currentMutation.conversationId === "")
-			this.currentMutation.conversationId = this.state.id;
-
 		if (this.currentMutation.data.type === "delete") {
 			this.sendMutation();
 		}
@@ -193,9 +184,6 @@ class Conversation extends Component<any, State> {
 	}
 
 	deleteMutation() {
-		if (this.currentMutation.conversationId === "")
-			this.currentMutation.conversationId = this.state.id;
-
 		if (this.currentMutation.data.type === "insert") {
 			if (this.currentMutation.data.length > 0) this.sendMutation();
 
@@ -207,19 +195,22 @@ class Conversation extends Component<any, State> {
 		this.currentMutation.data.length += 1;
 	}
 
-	updateOrigin() {
-		if (this.state.lastMutation === undefined) {
+	fixMutation() {
+		const { lastMutation } = this.state;
+
+		if (this.currentMutation.conversationId === "")
+			this.currentMutation.conversationId = this.state.id;
+
+		if (lastMutation === undefined) {
 			this.currentMutation.origin = {};
-			this.currentMutation.origin[this.props.user] = 0;
-		}else if (this.currentMutation.origin === undefined) {
+		} else if (this.currentMutation.origin === undefined) {
 			this.currentMutation.origin = {};
-			const { lastMutation } = this.state;
 			Object.keys(lastMutation.origin).forEach((key: string) => {
 				this.currentMutation.origin[key] = lastMutation.origin[key];
 			});
-			if (this.currentMutation.origin[lastMutation.author] === undefined)
-				this.currentMutation.origin[lastMutation.author] = 1;
-			else this.currentMutation.origin[lastMutation.author]++;
+			if (this.currentMutation.origin[lastMutation.author])
+				this.currentMutation.origin[lastMutation.author]++;
+			else this.currentMutation.origin[lastMutation.author] = 1;
 		}
 	}
 

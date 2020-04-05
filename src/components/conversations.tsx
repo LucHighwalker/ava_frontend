@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-type Props = {
-	user: string;
-};
+import { Props } from "../interfaces";
 
 type State = {
 	conversations: object[];
